@@ -8,3 +8,5 @@ Steps -
 
 **Warning**
 For  captcha solving  we are using  2captcha api. 
+
+For better  understanding you can see the  .mkv video.
