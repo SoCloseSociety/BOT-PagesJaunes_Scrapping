@@ -51,6 +51,8 @@ place_name = input("Enter place name :")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 driver.get("https://www.pagesjaunes.fr/")
+driver.maximize_window()
+
 time.sleep(10)
 
 result = solveCaptcha(driver.current_url)
