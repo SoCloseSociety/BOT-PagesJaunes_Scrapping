@@ -14,6 +14,8 @@ from selenium.common.exceptions import (
     TimeoutException,
 )
 
+from selenium.common.exceptions import NoSuchElementException        
+
 import time
 from selenium.webdriver.common.action_chains import ActionChains
 import sys
@@ -45,6 +47,17 @@ def solveCaptcha(url):
     else:
         return result
 
+        
+def check_exists_by_id(id):
+    global driver
+
+    try:
+        driver.find_element(By.ID,id)
+    except NoSuchElementException:
+        return False
+    return True
+
+
 search_query = input("Enter search query :")
 place_name = input("Enter place name :")
 
@@ -55,25 +68,23 @@ driver.maximize_window()
 
 time.sleep(10)
 
-result = solveCaptcha(driver.current_url)
-print(result)
+#Check we  are  in captha  page  or  not  
+captcha_page = check_exists_by_id("quoiqui")
 
-captcha_code = result['code']
-# WebDriverWait(driver, 25).until(
-#         EC.presence_of_element_located(
-#             (By.ID, "//*[contains(@id,'h-captcha-response')]")
-#         )
-#     )
 
-container = driver.find_element(By.ID,"cf-hcaptcha-container")
-# driver.execute_script("arguments[0].removeChild(arguments[0].firstElementChild);", container)
-# driver.execute_script("document.querySelector('[title= \"Main content of the hCaptcha challenge\"]').remove();")
+if(captcha_page == False):
+    result = solveCaptcha(driver.current_url)
+    print(result)
 
-driver.execute_script("document.querySelector(`[id^=h-captcha-response]`).innerHTML = " +"'"+ captcha_code +"'")
+    captcha_code = result['code']
 
-driver.execute_script("document.getElementById('challenge-form').submit()")
+    container = driver.find_element(By.ID,"cf-hcaptcha-container")
 
-time.sleep(10)
+    driver.execute_script("document.querySelector(`[id^=h-captcha-response]`).innerHTML = " +"'"+ captcha_code +"'")
+
+    driver.execute_script("document.getElementById('challenge-form').submit()")
+
+    time.sleep(10)
 
 driver.find_element(By.ID,"didomi-notice-agree-button").click()
 time.sleep(2)
